@@ -5,15 +5,22 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject[] animalsPrefab;
-    public float spawnRangeX = 14.0f;
-    public float spawnPositionZ = 20.0f;
+
+    // Info needed for animals spawning
+    public float SpawnPositionZ = 20.0f;
+    private float spawnRangeX = 14.0f;
+    private float spawnRangeZLow = -1.0f;
+    private float spawnRangeZHigh = 16.0f;
     private float startDelay = 2.0f;
-    private float spawnInterval = 1.5f;
+    private float SpawnInterval = 0.5f;
+
+    private string[] directions = { "top", "left", "right" };
+
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
+        InvokeRepeating("SpawnRandomAnimal", startDelay, SpawnInterval);
     }
 
     // Update is called once per frame
@@ -22,13 +29,30 @@ public class SpawnManager : MonoBehaviour
 
     }
 
+    // Controls The spawning of enemies from the top of the map
     void SpawnRandomAnimal()
     {
 
-            int animalIndex = Random.Range(0, animalsPrefab.Length);
-            Vector3 spawnPosition = new Vector3(Random.Range(-spawnRangeX, spawnRangeX), 0, 20);
-            GameObject spawnedAnimal = animalsPrefab[animalIndex];
+        int animalIndex = Random.Range(0, animalsPrefab.Length);
+        string spawnDirection = directions[Random.Range(0, directions.Length)];
+        Vector3 spawnPosition = Vector3.zero;
+        Quaternion rotation = new Quaternion();
 
-            Instantiate(spawnedAnimal, spawnPosition, spawnedAnimal.transform.rotation);
+        switch (spawnDirection)
+        {
+            case "left":
+                spawnPosition = new Vector3(-30, 0, Random.Range(spawnRangeZLow, spawnRangeZHigh));
+                rotation = Quaternion.LookRotation(Vector3.right);
+                break;
+            case "right":
+                spawnPosition = new Vector3(30, 0, Random.Range(spawnRangeZLow, spawnRangeZHigh));
+                rotation = Quaternion.LookRotation(Vector3.left);
+                break;
+            default:
+                spawnPosition = new Vector3(Random.Range(-spawnRangeX, spawnRangeX), 0, SpawnPositionZ);
+                rotation = animalsPrefab[animalIndex].transform.rotation;
+                break;
+        }
+        Instantiate(animalsPrefab[animalIndex], spawnPosition, rotation);
     }
 }
