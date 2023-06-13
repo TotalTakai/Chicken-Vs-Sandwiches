@@ -65,16 +65,16 @@ public class PlayerController : MonoBehaviour
             Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
         }
     }
-    static public void hit()
+    static public string hit()
     {
         playerLives--;
         if (playerLives > 0)
         {
-            Debug.Log($"Lives: {playerLives}, Score: {score}");
+            return($"Lives: {playerLives}, Score: {score}");
         }
         else
         {
-            Debug.Log("Game Over!");
+            return("Game Over!");
         }
     }
 
